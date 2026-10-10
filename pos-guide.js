@@ -1,13 +1,12 @@
 // ==========================================================
-// pos-guide.js : ② 품사학습 화면 (16종 품사 설명 카드)
+// pos-guide.js : ② 품사학습 화면 (15종 품사 설명 카드)
 // 품사 설명 문구는 POS_GUIDE_DATA 에서 고칩니다.
 // ==========================================================
 
 const POS_GUIDE_DATA = [
   { en: "Noun", ko: "명사", tag: "n", desc: "사람, 사물, 장소, 개념의 이름을 나타내는 단어", examples: "book, water, child, love, Korea" },
   { en: "Pronoun", ko: "대명사", tag: "pron", desc: "명사를 대신하여 가리키는 단어", examples: "I, they, it, this, someone" },
-  { en: "Cardinal Numeral", ko: "기수사", tag: "num", desc: "개수나 수량을 나타내는 단어", examples: "one, two, ten, hundred, million" },
-  { en: "Ordinal Numeral", ko: "서수사", tag: "ord", desc: "순서나 차례를 나타내는 단어", examples: "first, second, third, fifth, tenth" },
+  { en: "Numeral", ko: "수사", tag: "num", desc: "개수나 수량, 순서를 나타내는 단어", examples: "one, two, ten, first, second" },
   { en: "Verb", ko: "동사", tag: "v", desc: "동작이나 상태를 나타내는 단어", examples: "run, make, think, know, give" },
   { en: "Auxiliary Verb", ko: "조동사", tag: "aux. v", desc: "시제, 수동태 등을 만드는 데 도움을 주는 단어", examples: "be, have, do" },
   { en: "Modal Verb", ko: "법조동사", tag: "modal v", desc: "가능성, 허가, 의무 등의 태도를 나타내는 단어", examples: "can, will, must, should, may" },

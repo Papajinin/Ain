@@ -8,7 +8,7 @@
 // ==========================================================
 
 const POS_GROUPS = [
-  { id: "noun", name: "명사", subList: ["n", "pron", "num", "ord"] },
+  { id: "noun", name: "명사", subList: ["n", "pron", "num"] },
   { id: "verb", name: "동사", subList: ["v", "aux. v", "modal v", "linking v"] },
   { id: "adj", name: "형용사", subList: ["adj"] },
   { id: "adv", name: "부사", subList: ["adv"] },
@@ -16,7 +16,7 @@ const POS_GROUPS = [
 ];
 
 const POS_KOREAN_NAMES = {
-  "n": "명사", "pron": "대명사", "num": "수사", "ord": "서수사",
+  "n": "명사", "pron": "대명사", "num": "수사",
   "v": "동사", "aux. v": "조동사", "modal v": "법조동사", "linking v": "연결동사",
   "adj": "형용사", "adv": "부사", "prep": "전치사", "conj": "접속사",
   "det": "한정사", "def. art.": "정관사", "indef. art.": "부정관사", "INF": "부정사", "exclam": "감탄사"
