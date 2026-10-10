@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>AIN 영단어</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="AIN 영단어">
+
+  <!-- 아이폰 홈 화면 추가용 PNG 아이콘 및 파비콘 -->
+  <link rel="icon" type="image/png" id="app-favicon" href="./apple-touch-icon.png">
+  <link rel="apple-touch-icon" id="apple-icon" href="./apple-touch-icon.png">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- [UI-01] dark: 변형이 OS 설정이 아니라 앱 테마(theme-dark)를 따르도록 class 전략 사용 -->
+  <script>if (window.tailwind) tailwind.config = { darkMode: 'class' };</script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <link rel="stylesheet" href="./style.css?v=1">
+</head>
+<body class="theme-ios min-h-screen flex justify-center items-start antialiased selection:bg-blue-200">
+
+  <div id="app-container" class="w-full max-w-md min-h-screen flex flex-col justify-between relative pb-8">
+    
+    <!-- Top Global Header -->
+    <header class="w-full px-5 pt-4 pb-3 flex items-center justify-between sticky top-0 z-30 backdrop-blur-md bg-opacity-80">
+      <div class="flex items-center space-x-2">
+        <button id="btn-header-back-cat" class="hidden text-xs font-bold px-2 py-1 rounded-lg theme-badge flex items-center space-x-1 active:scale-95 transition">
+          <i class="fa-solid fa-chevron-left text-[10px]"></i>
+          <span>카테고리</span>
+        </button>
+        <!-- 심플 아이콘 + 텍스트 타이틀 -->
+        <div class="flex items-center space-x-2" id="header-brand-wrap">
+          <img src="./apple-touch-icon.png" alt="Icon" class="w-7 h-7 rounded-[8px] shadow-sm object-cover" onerror="this.style.display='none'">
+          <span class="font-black text-lg tracking-tight flex items-center space-x-1" id="header-main-title">
+            <span>AIN</span>
+            <span class="theme-primary-text">영단어</span>
+          </span>
+        </div>
+      </div>
+      <div class="flex items-center space-x-2">
+        <button id="btn-open-notebook" class="w-9 h-9 rounded-full theme-card flex items-center justify-center text-amber-500 border theme-border shadow-sm active:scale-90 transition" title="오답노트">
+          <i class="fa-solid fa-bookmark text-sm"></i>
+        </button>
+        <button id="btn-open-settings" class="w-9 h-9 rounded-full theme-card flex items-center justify-center theme-sub-text border theme-border shadow-sm active:scale-90 transition" title="설정">
+          <i class="fa-solid fa-gear text-sm"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- 1. 카테고리 -->
+    <main id="view-categories" class="flex-1 px-5 pt-2 flex flex-col space-y-5 fade-in">
+      <div class="text-center pt-2">
+        <span class="text-xs font-bold theme-badge px-3 py-1 rounded-full uppercase">Oxford 5000</span>
+        <h2 class="text-2xl font-black tracking-tight mt-2">어떤 단어를 학습할까요?</h2>
+        <p class="text-xs theme-sub-text mt-1">난이도를 먼저 선택한 후 품사 그룹을 골라주세요.</p>
+      </div>
+
+      <!-- Level Selector -->
+      <div>
+        <label class="block font-bold text-xs theme-sub-text uppercase tracking-wider mb-2 px-1">1단계: 난이도 (Level) 선택</label>
+        <div class="grid grid-cols-5 gap-1.5" id="level-btn-grid">
+          <button class="btn-level-select py-3 rounded-2xl border theme-border font-extrabold text-sm flex flex-col items-center justify-center active:scale-95 transition theme-primary-bg text-white shadow-sm" data-level="A1">
+            <span>A1</span>
+            <span class="text-[9px] font-normal opacity-85">입문</span>
+          </button>
+          <button class="btn-level-select py-3 rounded-2xl border theme-border font-extrabold text-sm flex flex-col items-center justify-center active:scale-95 transition theme-card" data-level="A2">
+            <span>A2</span>
+            <span class="text-[9px] font-normal opacity-70">초급</span>
+          </button>
+          <button class="btn-level-select py-3 rounded-2xl border theme-border font-extrabold text-sm flex flex-col items-center justify-center active:scale-95 transition theme-card" data-level="B1">
+            <span>B1</span>
+            <span class="text-[9px] font-normal opacity-70">중급</span>
+          </button>
+          <button class="btn-level-select py-3 rounded-2xl border theme-border font-extrabold text-sm flex flex-col items-center justify-center active:scale-95 transition theme-card" data-level="B2">
+            <span>B2</span>
+            <span class="text-[9px] font-normal opacity-70">중상급</span>
+          </button>
+          <button class="btn-level-select py-3 rounded-2xl border theme-border font-extrabold text-sm flex flex-col items-center justify-center active:scale-95 transition theme-card" data-level="C1">
+            <span>C1</span>
+            <span class="text-[9px] font-normal opacity-70">고급</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- POS Groups + POS Guide Button -->
+      <div class="flex-1 flex flex-col space-y-2">
+        <div class="flex items-center justify-between px-1">
+          <label class="block font-bold text-xs theme-sub-text uppercase tracking-wider">
+            2단계: 품사 선택 <span id="lbl-selected-level-hint" class="font-normal theme-primary-text">(선택된 레벨: A1)</span>
+          </label>
+          <button id="btn-open-pos-guide" class="text-xs font-bold px-2.5 py-1 rounded-xl theme-card border theme-border text-amber-500 shadow-sm active:scale-95 transition flex items-center space-x-1.5" title="영어 품사 설명 보기">
+            <span>영어 품사의 종류</span>
+            <i class="fa-solid fa-lightbulb text-amber-500 text-xs"></i>
+          </button>
+        </div>
+        <div class="space-y-2.5" id="pos-group-container"></div>
+      </div>
+    </main>
+
+    <!-- 1-1. 품사학습 가이드 -->
+    <main id="view-pos-guide" class="flex-1 px-5 pt-2 flex flex-col space-y-4 hidden fade-in">
+      <div class="flex items-center justify-between pb-2 border-b theme-border">
+        <div class="flex items-center space-x-2">
+          <button id="btn-pos-guide-back" class="w-8 h-8 rounded-full theme-card border theme-border flex items-center justify-center theme-sub-text active:scale-95">
+            <i class="fa-solid fa-chevron-left text-xs"></i>
+          </button>
+          <h2 class="text-base font-extrabold flex items-center space-x-1.5">
+            <span>영어 품사의 종류</span>
+            <i class="fa-solid fa-lightbulb text-amber-500 text-xs"></i>
+          </h2>
+        </div>
+        <span class="text-[11px] font-bold theme-badge px-2 py-0.5 rounded-full">총 16종</span>
+      </div>
+
+      <p class="text-xs theme-sub-text px-1">
+        영어 단어의 역할과 성격을 나타내는 16가지 기본 품사 정의와 대표 예시입니다.
+      </p>
+
+      <div class="flex-1 overflow-y-auto space-y-2.5 pb-4 pr-1" id="pos-guide-list"></div>
+    </main>
+
+    <!-- 2. 학습단계 -->
+    <main id="view-home" class="flex-1 px-5 pt-1 flex flex-col space-y-4 hidden fade-in">
+      <div class="theme-card p-1.5 rounded-2xl border theme-border flex items-center space-x-1 shadow-sm">
+        <button id="btn-mode-en-ko" class="flex-1 py-2 text-xs font-bold rounded-xl transition text-white theme-primary-bg shadow-sm">
+          <i class="fa-solid fa-arrow-right-arrow-left mr-1"></i> 영 ➔ 한 (암기)
+        </button>
+        <button id="btn-mode-ko-en" class="flex-1 py-2 text-xs font-bold rounded-xl transition theme-sub-text">
+          <i class="fa-solid fa-keyboard mr-1"></i> 한 ➔ 영 (스펠링)
+        </button>
+      </div>
+
+      <div class="theme-card p-4 rounded-2xl border theme-border flex items-center justify-between">
+        <div>
+          <div class="text-xs font-bold theme-sub-text uppercase tracking-wider" id="txt-progress-label">A1 명사 완주 진도율</div>
+          <div class="text-xl font-extrabold mt-0.5" id="txt-progress-summary">0 / 0 Day 완료</div>
+        </div>
+        <div class="text-right">
+          <div class="text-2xl font-black theme-primary-text" id="txt-progress-pct">0%</div>
+          <div class="text-[11px] theme-sub-text" id="txt-total-words-count">총 0단어</div>
+        </div>
+      </div>
+
+      <div class="flex-1 flex flex-col space-y-2.5 overflow-y-auto pb-4">
+        <div class="text-xs font-bold px-1 theme-sub-text flex justify-between items-center">
+          <span>학습 단계 (Day)</span>
+          <span class="text-[11px] font-normal" id="txt-words-per-day-badge">세트당 10개씩 (랜덤 배정)</span>
+        </div>
+        <div id="day-list" class="space-y-2.5"></div>
+      </div>
+    </main>
+
+    <!-- 3. 단어학습 -->
+    <main id="view-study" class="flex-1 px-5 pt-1 flex flex-col justify-between hidden fade-in">
+      <div>
+        <div class="flex items-center justify-between pb-3">
+          <button id="btn-study-exit" class="w-8 h-8 rounded-full theme-card border theme-border flex items-center justify-center theme-sub-text active:scale-95">
+            <i class="fa-solid fa-arrow-left text-xs"></i>
+          </button>
+          <span id="study-header-title" class="font-extrabold text-sm">Day 1 단어 학습</span>
+          <div class="w-8"></div>
+        </div>
+
+        <div class="theme-card p-1 rounded-xl border theme-border flex items-center space-x-1 shadow-sm mb-3">
+          <button id="btn-study-view-card" class="flex-1 py-1.5 text-xs font-bold rounded-lg transition text-white theme-primary-bg shadow-sm">
+            <i class="fa-regular fa-clone mr-1"></i> 카드형 (1장씩)
+          </button>
+          <button id="btn-study-view-list" class="flex-1 py-1.5 text-xs font-bold rounded-lg transition theme-sub-text">
+            <i class="fa-solid fa-list-ul mr-1"></i> 목록형 (한눈에)
+          </button>
+        </div>
+      </div>
+
+      <div id="study-area-card" class="flex-1 flex flex-col justify-center items-center my-2">
+        <div class="w-full theme-card rounded-3xl border theme-border p-6 py-8 flex flex-col items-center text-center relative shadow-md">
+          <span id="study-card-pos-badge" class="px-3 py-1 rounded-full text-xs font-semibold theme-badge mb-3">
+            명사 · A1
+          </span>
+          <div id="study-card-word" class="text-3xl font-extrabold tracking-tight mt-1 mb-1">
+            apple
+          </div>
+          <div class="flex items-center space-x-2 mt-1 mb-4">
+            <span id="study-card-ipa" class="text-sm font-medium theme-sub-text font-mono"></span>
+            <button id="btn-study-play-voice" class="w-8 h-8 rounded-full theme-badge flex items-center justify-center hover:scale-105 active:scale-95 transition">
+              <i class="fa-solid fa-volume-high text-xs"></i>
+            </button>
+          </div>
+          <div class="w-16 h-0.5 bg-black/5 dark:bg-white/10 my-2"></div>
+          <div id="study-card-meaning" class="text-2xl font-black theme-primary-text mt-3">
+            사과
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between w-full px-2 mt-4">
+          <button id="btn-study-prev" class="w-11 h-11 rounded-2xl theme-card border theme-border flex items-center justify-center font-bold text-sm theme-sub-text active:scale-90 transition">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          <span id="study-card-counter" class="text-xs font-black theme-sub-text">1 / 10</span>
+          <button id="btn-study-next" class="w-11 h-11 rounded-2xl theme-card border theme-border flex items-center justify-center font-bold text-sm theme-sub-text active:scale-90 transition">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <div id="study-area-list" class="flex-1 overflow-y-auto max-h-[420px] space-y-2 pr-1 my-2 hidden">
+        <div id="study-words-list-container" class="space-y-2"></div>
+      </div>
+
+      <div class="w-full pt-2">
+        <button id="btn-start-quiz-from-study" class="w-full py-4 rounded-2xl theme-primary-bg text-white font-extrabold text-base shadow-lg active:scale-98 transition flex items-center justify-center space-x-2">
+          <span>학습 완료! 테스트 시작하기</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </main>
+
+    <!-- 4. 영한 / 5. 한영 테스트 -->
+    <main id="view-quiz" class="flex-1 px-5 pt-1 flex flex-col justify-between hidden fade-in">
+      <div class="flex items-center justify-between pb-3">
+        <button id="btn-quiz-exit" class="w-8 h-8 rounded-full theme-card border theme-border flex items-center justify-center theme-sub-text active:scale-95">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+        <div class="flex-1 mx-4">
+          <div class="w-full bg-black/10 dark:bg-white/10 h-2 rounded-full overflow-hidden">
+            <div id="quiz-progress-bar" class="h-full theme-primary-bg transition-all duration-300 w-1/10 rounded-full"></div>
+          </div>
+        </div>
+        <span id="quiz-progress-text" class="text-xs font-black theme-sub-text">1 / 10</span>
+      </div>
+
+      <div class="flex-1 flex flex-col justify-center items-center my-2">
+        <div class="w-full theme-card rounded-3xl border theme-border p-6 py-8 flex flex-col items-center text-center relative shadow-md">
+          <span id="quiz-pos-badge" class="px-3 py-1 rounded-full text-xs font-semibold theme-badge mb-3">
+            명사 · A1
+          </span>
+          <div id="quiz-question-primary" class="text-3xl font-extrabold tracking-tight mt-1 mb-1">
+            action
+          </div>
+          <div id="quiz-ipa-container" class="flex items-center space-x-2 mt-1">
+            <span id="quiz-ipa" class="text-sm font-medium theme-sub-text font-mono"></span>
+            <button id="btn-play-voice" class="w-8 h-8 rounded-full theme-badge flex items-center justify-center hover:scale-105 active:scale-95 transition">
+              <i class="fa-solid fa-volume-high text-xs"></i>
+            </button>
+          </div>
+          <div class="w-16 h-0.5 bg-black/5 dark:bg-white/10 my-6"></div>
+
+          <div id="quiz-answer-container" class="min-h-[64px] flex flex-col justify-center items-center">
+            <div id="quiz-revealed-meaning" class="text-xl font-bold theme-primary-text hidden">
+              행동, 동작
+            </div>
+            <div id="quiz-hidden-placeholder" class="text-xs theme-sub-text italic">
+              아래 '정답 확인하기'를 눌러 뜻을 확인하세요
+            </div>
+          </div>
+
+          <div id="quiz-typing-container" class="w-full mt-2 hidden">
+            <input type="text" id="quiz-spell-input" autocapitalize="off" autocomplete="off" spellcheck="false"
+                   placeholder="영단어를 입력하세요..." 
+                   class="w-full px-4 py-3 text-center text-lg font-bold rounded-2xl border-2 theme-border bg-black/5 dark:bg-white/5 focus:outline-none focus:border-blue-500 transition">
+            <div id="quiz-feedback-msg" class="text-xs font-bold mt-2 min-h-[18px]"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="quiz-bottom-actions" class="w-full pb-2">
+        <button id="btn-show-answer" class="w-full py-4 rounded-2xl theme-primary-bg text-white font-bold text-base shadow-lg active:scale-98 transition flex items-center justify-center space-x-2">
+          <span>정답 확인하기</span>
+          <i class="fa-regular fa-eye"></i>
+        </button>
+
+        <div id="quiz-self-eval-buttons" class="grid grid-cols-2 gap-3 hidden">
+          <button id="btn-eval-wrong" class="py-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-600 font-bold text-base active:scale-95 transition flex items-center justify-center space-x-2">
+            <i class="fa-solid fa-xmark"></i>
+            <span>몰랐음</span>
+          </button>
+          <button id="btn-eval-correct" class="py-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 font-bold text-base active:scale-95 transition flex items-center justify-center space-x-2">
+            <i class="fa-solid fa-check"></i>
+            <span>알았음</span>
+          </button>
+        </div>
+
+        <button id="btn-submit-typing" class="w-full py-4 rounded-2xl theme-primary-bg text-white font-bold text-base shadow-lg active:scale-98 transition hidden">
+          확인
+        </button>
+      </div>
+    </main>
+
+    <!-- 6. 결과 -->
+    <main id="view-result" class="flex-1 px-5 pt-4 flex flex-col justify-between hidden fade-in">
+      <div class="flex-1 flex flex-col items-center">
+        <div id="result-icon-badge" class="w-20 h-20 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center text-4xl shadow-inner mt-4 mb-3">
+          <i class="fa-solid fa-trophy"></i>
+        </div>
+
+        <h2 id="result-title" class="text-2xl font-black tracking-tight">Day 클리어!</h2>
+        <p id="result-subtitle" class="text-xs theme-sub-text mt-1 text-center">모든 단어를 완벽하게 맞혔습니다.</p>
+
+        <div class="w-full theme-card rounded-2xl border theme-border p-4 my-4 flex items-center justify-around text-center">
+          <div>
+            <div class="text-xs theme-sub-text font-bold">정답률</div>
+            <div id="result-stat-pct" class="text-2xl font-black theme-primary-text mt-0.5">100%</div>
+          </div>
+          <div class="h-8 w-px bg-black/10 dark:bg-white/10"></div>
+          <div>
+            <div class="text-xs theme-sub-text font-bold">맞힌 개수</div>
+            <div id="result-stat-count" class="text-2xl font-black text-emerald-600 mt-0.5">10 / 10</div>
+          </div>
+        </div>
+
+        <div class="w-full flex-1 overflow-y-auto max-h-56 space-y-2 pr-1">
+          <div class="text-xs font-bold theme-sub-text px-1">단어 채점 내역</div>
+          <div id="result-words-list" class="space-y-1.5 text-xs"></div>
+        </div>
+      </div>
+
+      <div class="w-full space-y-2 pt-4">
+        <button id="btn-result-retry-missed" class="w-full py-3.5 rounded-2xl bg-rose-500 text-white font-bold text-sm shadow-md active:scale-98 transition hidden">
+          <i class="fa-solid fa-rotate-right mr-1.5"></i> 틀린 단어만 재도전 (100% 클리어)
+        </button>
+        <button id="btn-result-next-day" class="w-full py-3.5 rounded-2xl theme-primary-bg text-white font-bold text-sm shadow-md active:scale-98 transition">
+          <i class="fa-solid fa-forward-step mr-1.5"></i> 다음 Day로 진행
+        </button>
+        <button id="btn-result-home" class="w-full py-3 rounded-2xl theme-card border theme-border font-bold text-sm theme-sub-text active:scale-98 transition">
+          Day 목록으로 이동
+        </button>
+      </div>
+    </main>
+
+    <!-- 7. 오답노트 -->
+    <main id="view-notebook" class="flex-1 px-5 pt-3 flex flex-col justify-between hidden fade-in">
+      <div class="flex items-center justify-between pb-3 border-b theme-border">
+        <div class="flex items-center space-x-2">
+          <button id="btn-notebook-back" class="w-8 h-8 rounded-full theme-card border theme-border flex items-center justify-center theme-sub-text">
+            <i class="fa-solid fa-chevron-left text-xs"></i>
+          </button>
+          <h2 class="text-base font-bold">오답 노트</h2>
+        </div>
+        <span id="txt-notebook-count" class="text-xs font-bold theme-badge px-2.5 py-1 rounded-full">0개</span>
+      </div>
+
+      <div class="flex-1 overflow-y-auto py-3 space-y-2" id="notebook-list-container"></div>
+
+      <div class="pt-2">
+        <button id="btn-notebook-quiz-all" class="w-full py-3.5 rounded-2xl theme-primary-bg text-white font-bold text-sm shadow-md active:scale-98 transition">
+          <i class="fa-solid fa-play mr-1.5"></i> 오답 단어만 모아서 복습 퀴즈
+        </button>
+      </div>
+    </main>
+
+    <!-- 8. 설정 -->
+    <main id="view-settings" class="flex-1 px-5 pt-3 flex flex-col justify-between hidden fade-in">
+      <div class="flex items-center space-x-2 pb-3 border-b theme-border">
+        <button id="btn-settings-back" class="w-8 h-8 rounded-full theme-card border theme-border flex items-center justify-center theme-sub-text">
+          <i class="fa-solid fa-chevron-left text-xs"></i>
+        </button>
+        <h2 class="text-base font-bold">학습 및 발음 설정</h2>
+      </div>
+
+      <div class="flex-1 overflow-y-auto py-4 space-y-6 text-sm">
+        <div>
+          <label class="block font-bold text-xs theme-sub-text uppercase tracking-wider mb-2">화면 디자인 테마</label>
+          <div class="grid grid-cols-2 gap-2">
+            <button data-theme="theme-playful" class="theme-choice-btn p-3 rounded-xl border text-left flex flex-col justify-between active:scale-95 transition bg-sky-50 border-sky-200 text-sky-950">
+              <span class="font-bold text-xs">1. 스카이 파스텔</span>
+              <span class="text-[10px] opacity-75">Pure Sky</span>
+            </button>
+            <button data-theme="theme-ios" class="theme-choice-btn p-3 rounded-xl border text-left flex flex-col justify-between active:scale-95 transition bg-white border-blue-400 text-slate-900">
+              <span class="font-bold text-xs">2. 클래식 iOS</span>
+              <span class="text-[10px] opacity-75">iOS Minimal</span>
+            </button>
+            <button data-theme="theme-paper" class="theme-choice-btn p-3 rounded-xl border text-left flex flex-col justify-between active:scale-95 transition bg-[#fdfbf7] border-[#d8c8b4] text-[#3d3228]">
+              <span class="font-bold text-xs">3. 종이 단어장</span>
+              <span class="text-[10px] opacity-75">Warm Paper</span>
+            </button>
+            <button data-theme="theme-dark" class="theme-choice-btn p-3 rounded-xl border text-left flex flex-col justify-between active:scale-95 transition bg-[#161e2e] border-sky-400 text-white">
+              <span class="font-bold text-xs">4. 다크 모드</span>
+              <span class="text-[10px] opacity-75">Neon Sky</span>
+            </button>
+          </div>
+          
+          <div class="flex items-center justify-between mt-3 px-1">
+            <span class="text-xs theme-sub-text">기기 시스템 다크모드 자동 연동</span>
+            <input type="checkbox" id="setting-auto-dark" class="w-4 h-4 rounded text-blue-600">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-xs theme-sub-text uppercase tracking-wider mb-2">세트당 단어 개수</label>
+          <div class="flex items-center space-x-2">
+            <button class="btn-wpd px-4 py-2 rounded-xl border theme-border font-bold text-xs flex-1 theme-primary-bg text-white" data-count="10">10개</button>
+            <button class="btn-wpd px-4 py-2 rounded-xl border theme-border font-bold text-xs flex-1" data-count="15">15개</button>
+            <button class="btn-wpd px-4 py-2 rounded-xl border theme-border font-bold text-xs flex-1" data-count="20">20개</button>
+          </div>
+          <p class="text-[11px] theme-sub-text mt-1.5 px-1">세트 크기마다 Day 구성이 달라 진도는 크기별로 따로 저장됩니다.</p>
+        </div>
+
+        <div class="space-y-3">
+          <label class="block font-bold text-xs theme-sub-text uppercase tracking-wider">원어민 발음 (TTS) 설정</label>
+          <div>
+            <span class="text-xs font-semibold theme-sub-text block mb-1">목소리 종류</span>
+            <select id="setting-voice-select" class="w-full p-2.5 rounded-xl border theme-border theme-card text-xs font-medium focus:outline-none"></select>
+          </div>
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-xs font-semibold theme-sub-text">재생 속도</span>
+              <span id="lbl-voice-speed" class="text-xs font-bold font-mono">1.0x</span>
+            </div>
+            <input type="range" id="setting-voice-speed" min="0.7" max="1.3" step="0.1" value="1.0" class="w-full accent-blue-600">
+          </div>
+          <button id="btn-test-voice" class="w-full py-2.5 rounded-xl theme-card border theme-border text-xs font-bold theme-primary-text active:scale-98 transition flex items-center justify-center space-x-2">
+            <i class="fa-solid fa-volume-high"></i>
+            <span>선택한 목소리 발음 테스트 ("apple")</span>
+          </button>
+        </div>
+
+        <div class="space-y-2 pt-2 border-t theme-border">
+          <label class="block font-bold text-xs theme-sub-text uppercase tracking-wider">진도 데이터 백업 / 복원</label>
+          <p class="text-[11px] theme-sub-text">브라우저 기록 삭제에 대비해 학습 진도를 텍스트로 보관하거나 복구합니다.</p>
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <button id="btn-export-data" class="py-2.5 rounded-xl theme-card border theme-border text-xs font-bold active:scale-98 transition flex items-center justify-center space-x-1.5">
+              <i class="fa-regular fa-copy"></i>
+              <span>진도 백업(복사)</span>
+            </button>
+            <button id="btn-import-data" class="py-2.5 rounded-xl theme-card border theme-border text-xs font-bold active:scale-98 transition flex items-center justify-center space-x-1.5">
+              <i class="fa-solid fa-file-import"></i>
+              <span>진도 복원</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="pt-2 border-t theme-border">
+          <button id="btn-reset-data" class="w-full py-2.5 rounded-xl bg-red-500/10 text-red-500 border border-red-500/20 text-xs font-bold active:scale-98 transition">
+            학습 진행도 및 오답 초기화
+          </button>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- ===== 스크립트: 순서가 중요합니다 (words → app → 화면별 → main) =====
+       파일을 수정하면 해당 줄의 ?v= 숫자를 1 올려 주세요. (README.md 참고) -->
+  <script src="./words.js?v=1"></script>
+  <script src="./app.js?v=1"></script>
+  <script src="./category.js?v=1"></script>
+  <script src="./pos-guide.js?v=1"></script>
+  <script src="./days.js?v=1"></script>
+  <script src="./study.js?v=1"></script>
+  <script src="./quiz.js?v=1"></script>
+  <script src="./result.js?v=1"></script>
+  <script src="./notebook.js?v=1"></script>
+  <script src="./settings.js?v=1"></script>
+  <script src="./main.js?v=1"></script>
+</body>
+</html>
