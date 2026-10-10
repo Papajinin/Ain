@@ -213,6 +213,17 @@
           <span>학습 완료! 테스트 시작하기</span>
           <i class="fa-solid fa-arrow-right"></i>
         </button>
+        <!-- 클리어한 Day에서만 보이는 복습 버튼 2개 (study.js에서 전환) -->
+        <div id="study-review-buttons" class="grid grid-cols-2 gap-2 hidden">
+          <button id="btn-review-test" class="py-4 rounded-2xl theme-card border-2 theme-primary-text font-extrabold text-sm active:scale-95 transition flex items-center justify-center space-x-1.5" style="border-color: var(--primary);">
+            <i class="fa-solid fa-clipboard-check"></i>
+            <span>복습 테스트 하기!</span>
+          </button>
+          <button id="btn-review-game" class="py-4 rounded-2xl theme-primary-bg text-white font-extrabold text-sm shadow-lg active:scale-95 transition flex items-center justify-center space-x-1.5">
+            <i class="fa-solid fa-gamepad"></i>
+            <span>복습 게임 하기!</span>
+          </button>
+        </div>
       </div>
     </main>
 
@@ -253,6 +264,7 @@
             <div id="quiz-hidden-placeholder" class="text-xs theme-sub-text italic">
               아래 '정답 확인하기'를 눌러 뜻을 확인하세요
             </div>
+            <div id="quiz-choice-feedback" class="text-xs font-bold mt-1.5 hidden"></div>
           </div>
 
           <div id="quiz-typing-container" class="w-full mt-2 hidden">
@@ -262,6 +274,9 @@
             <div id="quiz-feedback-msg" class="text-xs font-bold mt-2 min-h-[18px]"></div>
           </div>
         </div>
+
+        <!-- 복습 게임(4지선다) 보기 영역 (quiz.js에서 채움) -->
+        <div id="quiz-choice-container" class="w-full mt-3 space-y-2 hidden"></div>
       </div>
 
       <div id="quiz-bottom-actions" class="w-full pb-2">
@@ -317,7 +332,7 @@
 
       <div class="w-full space-y-2 pt-4">
         <button id="btn-result-retry-missed" class="w-full py-3.5 rounded-2xl bg-rose-500 text-white font-bold text-sm shadow-md active:scale-98 transition hidden">
-          <i class="fa-solid fa-rotate-right mr-1.5"></i> 틀린 단어만 재도전 (100% 클리어)
+          <i class="fa-solid fa-rotate-right mr-1.5"></i> <span id="txt-result-retry-label">틀린 단어만 재도전 (100% 클리어)</span>
         </button>
         <button id="btn-result-next-day" class="w-full py-3.5 rounded-2xl theme-primary-bg text-white font-bold text-sm shadow-md active:scale-98 transition">
           <i class="fa-solid fa-forward-step mr-1.5"></i> 다음 Day로 진행
@@ -447,9 +462,9 @@
   <script src="./category.js?v=1"></script>
   <script src="./pos-guide.js?v=2"></script>
   <script src="./days.js?v=1"></script>
-  <script src="./study.js?v=1"></script>
-  <script src="./quiz.js?v=1"></script>
-  <script src="./result.js?v=1"></script>
+  <script src="./study.js?v=2"></script>
+  <script src="./quiz.js?v=2"></script>
+  <script src="./result.js?v=2"></script>
   <script src="./notebook.js?v=1"></script>
   <script src="./settings.js?v=1"></script>
   <script src="./main.js?v=1"></script>

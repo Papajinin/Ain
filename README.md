@@ -20,7 +20,7 @@ Oxford 5000 기반 영어 단어 학습 웹앱입니다. GitHub Pages로 배포�
 | `pos-guide.js` | ② 품사학습 화면 (15종 품사 설명) |
 | `days.js` | ③ 학습단계 화면 (Day 목록, 진도율, 영한/한영 선택) |
 | `study.js` | ④ 단어학습 화면 (카드형/목록형) |
-| `quiz.js` | ⑤ 영한 · ⑥ 한영 퀴즈 화면 |
+| `quiz.js` | ⑤ 영한 · ⑥ 한영 퀴즈 화면 + 복습 게임(4지선다) |
 | `result.js` | ⑦ 결과 화면 |
 | `notebook.js` | ⑧ 오답노트 화면 |
 | `settings.js` | ⑨ 설정 화면 (테마, 세트 크기, 음성, 백업/복원/초기화) |
@@ -44,6 +44,9 @@ Oxford 5000 기반 영어 단어 학습 웹앱입니다. GitHub Pages로 배포�
 | Day 목록, 진도율, 잠금 규칙 | `days.js` |
 | 단어 학습 카드/목록 동작 | `study.js` |
 | 퀴즈 진행, 스펠링 채점 규칙 | `quiz.js` |
+| 복습 게임의 보기 고르는 규칙 (오답 후보, 개수) | `quiz.js` (`buildChoices`) |
+| 복습 게임 넘어가는 시간 (정답 1.2초 / 오답 2초) | `quiz.js` (`pickChoice`) |
+| 클리어한 Day의 복습 버튼 2개 표시 조건 | `study.js` (`openStudyView`) |
 | 결과 화면 문구, 클리어 기록 방식 | `result.js` |
 | 오답노트 동작 | `notebook.js` |
 | 설정 항목 동작, 백업/복원 | `settings.js` |

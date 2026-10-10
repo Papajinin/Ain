@@ -1,5 +1,6 @@
 // ==========================================================
 // result.js : ⑦ 결과 화면 (정답률, 오답 목록, 100% 클리어 기록)
+// 복습 게임 결과도 이 화면을 함께 씁니다 (문구만 다름, 진도 기록 없음).
 // ==========================================================
 
 function finishQuiz() {
@@ -20,12 +21,22 @@ function finishQuiz() {
 
   const isDayQuiz = quizSource === "day";
 
+  // 재도전 버튼 문구 (게임이면 게임으로 다시)
+  document.getElementById("txt-result-retry-label").textContent =
+    quizIsGame ? "틀린 단어만 게임으로 재도전" : "틀린 단어만 재도전 (100% 클리어)";
+
   if (isAllClear) {
     iconBadge.className = "w-20 h-20 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center text-4xl shadow-inner mt-4 mb-3";
     iconBadge.innerHTML = `<i class="fa-solid fa-trophy"></i>`;
     retryBtn.classList.add("hidden");
 
-    if (isDayQuiz) {
+    if (quizIsGame) {
+      // 복습 게임: 이미 클리어한 Day라 진도는 기록하지 않음
+      title.textContent = "복습 게임 100%!";
+      subtitle.textContent = `Day ${currentQuizDayNumber} 단어를 게임으로 모두 맞혔습니다.`;
+      const totalDays = Math.ceil(getWordsForCategory(state.selectedLevel, state.selectedPosGroup).length / state.wordsPerDay);
+      nextBtn.classList.toggle("hidden", currentQuizDayNumber >= totalDays);
+    } else if (isDayQuiz) {
       title.textContent = `Day ${currentQuizDayNumber} 100% 클리어!`;
       subtitle.textContent = "모든 단어를 완벽하게 마스터하셨습니다.";
 
@@ -44,9 +55,11 @@ function finishQuiz() {
     iconBadge.className = "w-20 h-20 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center text-4xl shadow-inner mt-4 mb-3";
     iconBadge.innerHTML = `<i class="fa-solid fa-fire"></i>`;
     title.textContent = `아쉬워요! (${missedCount}개 오답)`;
-    subtitle.textContent = isDayQuiz
-      ? "100% 완벽히 맞혀야 클리어 인정됩니다. 틀린 단어에 다시 도전해보세요!"
-      : "틀린 단어에 다시 도전해보세요!";
+    subtitle.textContent = quizIsGame
+      ? "틀린 단어를 게임으로 다시 도전해보세요!"
+      : isDayQuiz
+        ? "100% 완벽히 맞혀야 클리어 인정됩니다. 틀린 단어에 다시 도전해보세요!"
+        : "틀린 단어에 다시 도전해보세요!";
     retryBtn.classList.remove("hidden");
     nextBtn.classList.add("hidden");
   }
@@ -88,6 +101,6 @@ function initResultScreen() {
     openStudyView(currentQuizDayNumber + 1);
   };
   document.getElementById("btn-result-retry-missed").onclick = () => {
-    startQuiz(currentQuizDayNumber, quizSource, [...quizMissedWords]);
+    startQuiz(currentQuizDayNumber, quizSource, [...quizMissedWords], quizIsGame);
   };
 }

@@ -1,5 +1,6 @@
 // ==========================================================
 // study.js : ④ 단어학습 화면 (카드형 / 목록형)
+// 클리어한 Day(현재 모드 기준)는 하단 버튼이 [복습 테스트 / 복습 게임] 2개로 바뀝니다.
 // ==========================================================
 
 let studyWords = [];
@@ -16,6 +17,11 @@ function openStudyView(dayNumber) {
 
   currentStudyIndex = 0;
   document.getElementById("study-header-title").textContent = `Day ${dayNumber} 단어 학습 (${studyWords.length}단어)`;
+
+  // 현재 모드에서 클리어한 Day면 복습 버튼 2개, 아니면 기존 테스트 버튼 1개
+  const isCleared = !!state.clearedDays[getClearKey(state.mode, state.selectedLevel, state.selectedPosGroup, dayNumber)];
+  document.getElementById("btn-start-quiz-from-study").classList.toggle("hidden", isCleared);
+  document.getElementById("study-review-buttons").classList.toggle("hidden", !isCleared);
 
   setStudyMode('card');
   renderStudyCard();
@@ -108,5 +114,13 @@ function initStudyScreen() {
 
   document.getElementById("btn-start-quiz-from-study").onclick = () => {
     startQuiz(currentStudyDay);
+  };
+  // 복습 테스트: 기존 테스트와 동일
+  document.getElementById("btn-review-test").onclick = () => {
+    startQuiz(currentStudyDay);
+  };
+  // 복습 게임: 4지선다 (quiz.js)
+  document.getElementById("btn-review-game").onclick = () => {
+    startQuiz(currentStudyDay, "day", null, true);
   };
 }
