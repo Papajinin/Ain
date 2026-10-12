@@ -23,7 +23,7 @@ Oxford 5000 기반 영어 단어 학습 웹앱입니다. GitHub Pages로 배포�
 | `quiz.js` | ⑤ 영한 · ⑥ 한영 퀴즈 화면 + 복습 게임(4지선다) |
 | `result.js` | ⑦ 결과 화면 |
 | `notebook.js` | ⑧ 오답노트 화면 |
-| `settings.js` | ⑨ 설정 화면 (테마, 세트 크기, 음성, 백업/복원/초기화) |
+| `settings.js` | ⑨ 설정 화면 (테마, 세트 크기, 음성, 백업 파일 저장·불러오기, 초기화) |
 | `main.js` | 앱 시작 순서 (가장 마지막에 실행) |
 | `apple-touch-icon.png` | 홈 화면 아이콘 · 헤더 로고 |
 | `README.md` | 이 안내서 |
@@ -49,7 +49,9 @@ Oxford 5000 기반 영어 단어 학습 웹앱입니다. GitHub Pages로 배포�
 | 클리어한 Day의 복습 버튼 2개 표시 조건 | `study.js` (`openStudyView`) |
 | 결과 화면 문구, 클리어 기록 방식 | `result.js` |
 | 오답노트 동작 | `notebook.js` |
-| 설정 항목 동작, 백업/복원 | `settings.js` |
+| 설정 항목 동작, 백업 불러오기, 초기화 확인 문구 | `settings.js` |
+| 백업 파일 저장 방식, 백업 알림 기준일(7일) | `app.js` (`backupToFile`, `BACKUP_REMIND_DAYS`) |
+| 첫 화면 백업 알림 문구·버튼 | `index.html` (`backup-reminder`), `category.js` |
 | 발음(TTS) 동작, 화면 전환, 헤더 제목 | `app.js` |
 
 > 자바스크립트 파일(`.js`)이나 `style.css`를 고치면 **`index.html`의 버전 번호도 함께 올려야** 합니다. (3번 참고)

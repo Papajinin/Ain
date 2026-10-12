@@ -3,6 +3,7 @@
 //  - 품사 그룹 정의, 저장소(localStorage) 읽기/쓰기, 백업 검증
 //  - 단어 데이터 읽기, 발음(TTS), 화면 전환, 테마 적용
 //  - 카테고리별 단어 목록과 Day 진도 키 계산
+//  - 백업 파일 저장(공유 창)과 7일 백업 알림 계산
 // 저장 키 STORAGE_KEY 와 state 의 항목 이름은 바꾸지 마세요.
 // (바꾸면 기존 진도·오답노트·설정을 읽지 못합니다)
 // ==========================================================
@@ -63,7 +64,10 @@ let state = {
   selectedLevel: "A1",
   selectedPosGroup: "noun",
   clearedDays: {},
-  notebook: []
+  notebook: [],
+  lastBackupAt: null,      // 마지막 백업 시각 (ms)
+  backupRemindFrom: null,  // 백업한 적이 없을 때 7일을 세기 시작한 시각 (첫 진도가 생긴 때)
+  backupSnoozeDay: ""      // "나중에"를 누른 날짜 (그날은 알림 숨김)
 };
 
 let allWords = [];
@@ -231,4 +235,69 @@ function getWordsForCategory(level, posGroupId) {
 
 function getClearKey(mode, level, posGroup, day) {
   return `${mode}_${level}_${posGroup}_${state.wordsPerDay}_${day}`;
+}
+
+// ---------- 백업 ----------
+const DAY_MS = 24 * 60 * 60 * 1000;
+const BACKUP_REMIND_DAYS = 7;
+
+function localDateKey(ms) {
+  const d = new Date(ms);
+  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+}
+
+function hasProgress() {
+  return Object.values(state.clearedDays || {}).some(Boolean) || (state.notebook || []).length > 0;
+}
+
+// 알림을 보여 줄지 판단. 보여 줄 때는 지난 일수를, 아니면 0을 돌려줌
+function backupReminderDays(now = Date.now()) {
+  if (!hasProgress()) return 0;
+  if (!state.lastBackupAt && !state.backupRemindFrom) {
+    state.backupRemindFrom = now;   // 처음 진도가 생긴 때부터 7일을 셈
+    saveState();
+    return 0;
+  }
+  const base = state.lastBackupAt || state.backupRemindFrom;
+  const days = Math.floor((now - base) / DAY_MS);
+  if (days < BACKUP_REMIND_DAYS) return 0;
+  if (state.backupSnoozeDay === localDateKey(now)) return 0;
+  return days;
+}
+
+// 백업 파일 저장: 아이폰 공유 창을 열고(안 되면 다운로드), 끝나면 백업 날짜 기록
+// 파일 내용은 예전 텍스트 백업과 같은 형식(JSON)입니다.
+// 결과: "shared"(공유 창으로 저장 완료) / "downloaded"(다운로드로 대체, 저장 여부는 알 수 없음) / false(공유 창을 닫음)
+async function backupToFile() {
+  const now = Date.now();
+  const json = JSON.stringify({ ...state, lastBackupAt: now });
+  const fileName = `ain-english-backup-${localDateKey(now)}.json`;
+  const file = new File([json], fileName, { type: "application/json" });
+
+  let shared = false;
+  if (navigator.canShare && navigator.share && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({ files: [file], title: "AIN 영단어 진도 백업" });
+      shared = true;
+    } catch (e) {
+      if (e && e.name === "AbortError") return false;   // 공유 창을 닫음
+    }
+  }
+  if (!shared) downloadFile(file);
+
+  state.lastBackupAt = now;
+  state.backupSnoozeDay = "";
+  saveState();
+  return shared ? "shared" : "downloaded";
+}
+
+function downloadFile(file) {
+  const url = URL.createObjectURL(file);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = file.name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }

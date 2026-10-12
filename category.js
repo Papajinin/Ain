@@ -1,9 +1,18 @@
 // ==========================================================
 // category.js : ① 카테고리 화면 (레벨 A1~C1, 품사 그룹 카드)
 // 헤더의 [< 카테고리] 버튼도 여기서 연결합니다.
+// 7일 백업 알림도 이 화면 맨 위에 표시합니다 (계산은 app.js).
 // ==========================================================
 
 function renderCategoryView() {
+  const remindDays = backupReminderDays();
+  document.getElementById("backup-reminder").classList.toggle("hidden", remindDays === 0);
+  if (remindDays > 0) {
+    document.getElementById("txt-backup-reminder-title").textContent = state.lastBackupAt
+      ? `마지막 백업 후 ${remindDays}일이 지났어요`
+      : "아직 진도를 백업하지 않았어요";
+  }
+
   document.getElementById("lbl-selected-level-hint").textContent = `(선택된 레벨: ${state.selectedLevel})`;
   document.querySelectorAll(".btn-level-select").forEach(btn => {
     const lvl = btn.getAttribute("data-level");
@@ -63,6 +72,16 @@ function initCategoryScreen() {
       renderCategoryView();
     };
   });
+
+  document.getElementById("btn-backup-later").onclick = () => {
+    state.backupSnoozeDay = localDateKey(Date.now());   // 오늘은 숨김, 내일 다시 표시
+    saveState();
+    renderCategoryView();
+  };
+  document.getElementById("btn-backup-now").onclick = async () => {
+    await backupToFile();
+    renderCategoryView();
+  };
 
   document.getElementById("btn-header-back-cat").onclick = () => {
     renderCategoryView();
