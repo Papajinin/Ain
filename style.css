@@ -20,13 +20,13 @@ body.theme-dark {
   --logo-cover: #f97316; --logo-letter: #0f172a; --logo-ribbon: #ffffff;
   --sp-bg:#0f172a; --sp-ain:#ffffff; --sp-accent:#f97316; --sp-glow:rgba(249,115,22,.5); --sp-badge-bg:#f97316; --sp-badge-text:#0b0b0b; --sp-badge-border:transparent; --sp-bar-from:#c2410c; --sp-bar-to:#fb923c; --sp-track:rgba(0,0,0,.5); --sp-track-border:rgba(255,255,255,.1); --sp-sub:rgba(253,186,116,.75);
 }
-/* 2. 네코마 (웜 화이트 + 레드) */
+/* 2. 네코마 (웜 화이트 + 레드) — 시작 화면은 레드 유니폼 */
 body.theme-ios {
   --bg-page: #fff5f5; --bg-card: #ffffff; --text-main: #1f1315; --text-sub: #8a5a5e;
   --primary: #dc2626; --primary-hover: #b91c1c; --on-primary: #ffffff; --accent-text: #b91c1c; --border: #f5d5d5;
   --accent-badge: #fee2e2; --accent-badge-text: #b91c1c; --card-shadow: 0 4px 16px rgba(127, 29, 29, 0.06);
   --logo-cover: #dc2626; --logo-letter: #ffffff; --logo-ribbon: #1f1315;
-  --sp-bg:#0b0d13; --sp-ain:#ffffff; --sp-accent:#ef4444; --sp-glow:rgba(239,68,68,.5); --sp-badge-bg:#ef4444; --sp-badge-text:#ffffff; --sp-badge-border:transparent; --sp-bar-from:#991b1b; --sp-bar-to:#f87171; --sp-track:rgba(0,0,0,.5); --sp-track-border:rgba(255,255,255,.1); --sp-sub:rgba(252,165,165,.75);
+  --sp-bg:#c81e1e; --sp-ain:#ffffff; --sp-accent:#0b0d13; --sp-glow:rgba(0,0,0,.25); --sp-badge-bg:#0b0d13; --sp-badge-text:#ffffff; --sp-badge-border:transparent; --sp-bar-from:#0b0d13; --sp-bar-to:#3f3f46; --sp-track:rgba(0,0,0,.25); --sp-track-border:rgba(255,255,255,.18); --sp-sub:rgba(255,255,255,.8);
 }
 /* 3. 아오바조사이 (민트 화이트 + 청록) */
 body.theme-playful {
@@ -36,13 +36,13 @@ body.theme-playful {
   --logo-cover: #0f766e; --logo-letter: #ffffff; --logo-ribbon: #5eead4;
   --sp-bg:#f8fafc; --sp-ain:#0f172a; --sp-accent:#0d9488; --sp-glow:rgba(13,148,136,.25); --sp-badge-bg:#0d9488; --sp-badge-text:#ffffff; --sp-badge-border:transparent; --sp-bar-from:#0f766e; --sp-bar-to:#2dd4bf; --sp-track:rgba(15,23,42,.08); --sp-track-border:rgba(15,23,42,.12); --sp-sub:rgba(15,118,110,.8);
 }
-/* 4. 후쿠로다니 (샌드 + 차콜 + 옐로) */
+/* 4. 후쿠로다니 (샌드 + 유니폼의 슬레이트 회색 + 카키 골드) */
 body.theme-paper {
-  --bg-page: #f4efe6; --bg-card: #fcfaf6; --text-main: #18181b; --text-sub: #71665c;
-  --primary: #27272a; --primary-hover: #18181b; --on-primary: #eab308; --accent-text: #a16207; --border: #e3dace;
-  --accent-badge: #fef3c7; --accent-badge-text: #854d0e; --card-shadow: 0 4px 14px rgba(60, 50, 30, 0.08);
-  --logo-cover: #27272a; --logo-letter: #eab308; --logo-ribbon: #eab308;
-  --sp-bg:#050505; --sp-ain:#ffffff; --sp-accent:#eab308; --sp-glow:rgba(234,179,8,.45); --sp-badge-bg:#050505; --sp-badge-text:#eab308; --sp-badge-border:#eab308; --sp-bar-from:#a16207; --sp-bar-to:#facc15; --sp-track:rgba(255,255,255,.08); --sp-track-border:rgba(255,255,255,.12); --sp-sub:rgba(253,224,71,.7);
+  --bg-page: #f4efe6; --bg-card: #fcfaf6; --text-main: #1f2a30; --text-sub: #66706f;
+  --primary: #364245; --primary-hover: #2b3538; --on-primary: #d5c57d; --accent-text: #7c6a1e; --border: #e3dace;
+  --accent-badge: #f1ead0; --accent-badge-text: #5c5216; --card-shadow: 0 4px 14px rgba(40, 50, 55, 0.08);
+  --logo-cover: #364245; --logo-letter: #d5c57d; --logo-ribbon: #d5c57d;
+  --sp-bg:linear-gradient(160deg,#4a565c,#2c363b); --sp-ain:#ffffff; --sp-accent:#d5c57d; --sp-glow:rgba(213,197,125,.4); --sp-badge-bg:#d5c57d; --sp-badge-text:#1f2a30; --sp-badge-border:transparent; --sp-bar-from:#a8995a; --sp-bar-to:#e3d48f; --sp-track:rgba(0,0,0,.3); --sp-track-border:rgba(255,255,255,.12); --sp-sub:rgba(227,212,143,.75);
 }
 
 body { background-color: var(--bg-page); color: var(--text-main); transition: background-color 0.25s ease, color 0.25s ease; }
