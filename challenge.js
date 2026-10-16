@@ -5,6 +5,7 @@
 // 그림 파일: 저장소 맨 위에 puzzle-연도-월.jpg 이름으로 올리면 자동 적용
 //   (예: puzzle-2026-11.jpg / 확장자는 jpg, jpeg, png, webp 중 하나, 소문자)
 // 저장 데이터는 state.challenge (app.js 의 normalizeChallenge 참고)
+// 챌린지를 시작한 달에 한 번, 지금까지 끝낸 Day만큼 지난 칸을 채워 줌 (runChallengeCatchUp)
 // ==========================================================
 
 const PUZZLE_COLS = 7;
@@ -29,6 +30,7 @@ let challengeBlink = false;   // "밀린 공부 하러 가기!"를 눌러 빈칸
 let puzzleMonth = null;       // 퍼즐 크게 보기 화면의 달 ("2026-10")
 let puzzleJustOpened = -1;    // 방금 연 조각 번호 (표시용)
 let lastCreditMonth = null;   // 결과 화면 "조각 열기!"가 열 달
+let catchUpNotice = null;     // 방금 정산으로 채운 칸 수 (조각 고르기 화면 안내용)
 const puzzleImageCache = {};
 
 // ---------- 날짜 계산 ----------
@@ -118,6 +120,46 @@ function challengeCreditForDay(level, group, day, wasCleared) {
   return { y, m, d, mk, count: give, bonus: earned === 2 };
 }
 
+// ---------- 지난 진도 한 번 정산 ----------
+// 챌린지를 시작한 달에 딱 한 번: 영→한·한→영을 모두 끝낸 Day 수만큼
+// 1일부터 차례로 지난 칸을 채움 (오늘 칸은 제외, 이미 채운 칸 수만큼은 뺌)
+function countDaysClearedBothModes() {
+  let count = 0;
+  Object.keys(state.clearedDays).forEach(key => {
+    if (!state.clearedDays[key] || !key.startsWith("en-ko_")) return;
+    if (state.clearedDays["ko-en_" + key.slice("en-ko_".length)]) count++;
+  });
+  return count;
+}
+
+function runChallengeCatchUp() {
+  const c = state.challenge;
+  if (c.catchUpDone) return;
+  ensureChallengeStart();
+  c.catchUpDone = true;   // 결과와 상관없이 한 번만
+
+  const t = todayParts();
+  if (c.startMonth !== monthKeyOf(t.y, t.m)) { saveState(); return; }
+
+  // 업데이트 뒤 공부로 이미 채운 칸은 그 Day가 이미 센 것이므로 뺌
+  const alreadyFilled = Object.keys(c.days).filter(k => c.days[k]).length;
+  let credits = Math.max(0, countDaysClearedBothModes() - alreadyFilled);
+  const mk = monthKeyOf(t.y, t.m);
+  let filled = 0;
+  for (let d = 1; d < t.d && credits > 0; d++) {
+    const key = dateKeyOf(t.y, t.m, d);
+    if (c.days[key]) continue;
+    c.days[key] = true;
+    const remaining = PUZZLE_TILES - (c.tiles[mk] || []).length - (c.pending[mk] || 0);
+    const give = Math.max(0, Math.min(tilesForDate(t.y, t.m, d), remaining));
+    if (give > 0) c.pending[mk] = (c.pending[mk] || 0) + give;
+    credits--;
+    filled++;
+  }
+  if (filled > 0) catchUpNotice = { m: t.m, days: filled };
+  saveState();
+}
+
 // ---------- 퍼즐 그림 불러오기 ----------
 function loadPuzzleImage(mk, done) {
   if (puzzleImageCache[mk]) { done(puzzleImageCache[mk]); return; }
@@ -179,6 +221,7 @@ function renderPuzzleBoard(container, mk, { maxHeight, picking = false, highligh
 
 // ---------- 챌린지 화면 ----------
 function openChallenge() {
+  runChallengeCatchUp();
   // 고르지 않은 조각이 남아 있으면 먼저 고르기 화면으로 (앱을 닫아도 조각이 사라지지 않게)
   const pendingMonth = Object.keys(state.challenge.pending).find(k => state.challenge.pending[k] > 0);
   if (pendingMonth) { openPuzzle(pendingMonth); return; }
@@ -291,7 +334,10 @@ function renderPuzzleViewer() {
   const msg = document.getElementById("puzzle-message");
   msg.className = `text-center text-sm font-extrabold mb-3${pending > 0 ? " theme-primary-text" : ""}`;
   msg.textContent = pending > 0 ? `열 조각을 골라요 (${pending}개)` : (puzzleJustOpened >= 0 ? "조각이 열렸어요!" : "그림을 감상해요");
-  document.getElementById("puzzle-submessage").textContent = pending > 0 ? "잠긴 조각 중 하나를 눌러요" : "";
+  document.getElementById("puzzle-submessage").textContent = pending > 0
+    ? (catchUpNotice ? `지금까지 공부한 만큼 ${catchUpNotice.m}월 1일부터 ${catchUpNotice.days}칸을 채웠어요! 잠긴 조각을 눌러요` : "잠긴 조각 중 하나를 눌러요")
+    : "";
+  if (pending === 0) catchUpNotice = null;
 
   renderPuzzleBoard(document.getElementById("puzzle-board-large"), mk, {
     maxHeight: Math.max(220, Math.round(window.innerHeight * 0.5)),

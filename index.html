@@ -26,14 +26,14 @@
     <!-- Top Global Header -->
     <header class="w-full px-5 pt-4 pb-3 flex items-center justify-between sticky top-0 z-30 backdrop-blur-md bg-opacity-80">
       <div class="flex items-center space-x-2">
-        <button id="btn-header-back-cat" class="hidden text-xs font-bold px-2 py-1 rounded-lg theme-badge flex items-center space-x-1 active:scale-95 transition">
+        <button id="btn-header-back-cat" class="hidden text-xs font-bold px-2 py-1 rounded-lg theme-badge flex items-center space-x-1 active:scale-95 transition whitespace-nowrap shrink-0">
           <i class="fa-solid fa-chevron-left text-[10px]"></i>
           <span>카테고리</span>
         </button>
         <!-- 심플 아이콘 + 텍스트 타이틀 -->
         <div class="flex items-center space-x-2" id="header-brand-wrap">
-          <img src="./apple-touch-icon.png" alt="Icon" class="w-7 h-7 rounded-[8px] shadow-sm object-cover" onerror="this.style.display='none'">
-          <span class="font-black text-lg tracking-tight flex items-center space-x-1" id="header-main-title">
+          <img id="header-logo" src="./apple-touch-icon.png" alt="Icon" class="w-7 h-7 rounded-[8px] shadow-sm object-cover" onerror="this.style.display='none'">
+          <span class="font-black text-lg tracking-tight flex items-center space-x-1 whitespace-nowrap" id="header-main-title">
             <span>AIN</span>
             <span class="theme-primary-text">영단어</span>
           </span>
@@ -538,7 +538,7 @@
   <!-- ===== 스크립트: 순서가 중요합니다 (words → app → 화면별 → main) =====
        파일을 수정하면 해당 줄의 ?v= 숫자를 1 올려 주세요. (README.md 참고) -->
   <script src="./words.js?v=2"></script>
-  <script src="./app.js?v=3"></script>
+  <script src="./app.js?v=10"></script>
   <script src="./category.js?v=3"></script>
   <script src="./pos-guide.js?v=2"></script>
   <script src="./days.js?v=2"></script>
@@ -546,7 +546,7 @@
   <script src="./quiz.js?v=2"></script>
   <script src="./result.js?v=3"></script>
   <script src="./notebook.js?v=1"></script>
-  <script src="./challenge.js?v=1"></script>
+  <script src="./challenge.js?v=10"></script>
   <script src="./settings.js?v=3"></script>
   <script src="./main.js?v=2"></script>
 </body>

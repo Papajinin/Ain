@@ -70,7 +70,8 @@ let state = {
     days: {},          // 채운 날짜 { "2026-10-16": true }
     tiles: {},         // 달별로 연 조각 번호 { "2026-10": [3, 17] }
     pending: {},       // 달별로 아직 고르지 않은 조각 수 { "2026-10": 1 }
-    filling: null      // 지금 채우는 중인 날짜 ("2026-10-12"), 없으면 오늘
+    filling: null,     // 지금 채우는 중인 날짜 ("2026-10-12"), 없으면 오늘
+    catchUpDone: false // 지난 진도 한 번 정산을 했는지 (challenge.js 의 runChallengeCatchUp)
   }
 };
 
@@ -108,7 +109,8 @@ function normalizeChallenge() {
     days: isObj(c.days) ? c.days : {},
     tiles,
     pending,
-    filling: typeof c.filling === "string" ? c.filling : null
+    filling: typeof c.filling === "string" ? c.filling : null,
+    catchUpDone: c.catchUpDone === true
   };
 }
 
@@ -228,13 +230,14 @@ function switchView(viewId) {
     backCatBtn.classList.add("hidden");
     mainTitle.innerHTML = `<span>AIN</span><span class="theme-primary-text">영단어</span>`;
   } else if (viewId === "view-home") {
+    // 좁은 화면에서 줄바꿈되지 않도록: "(A1 명사)"는 아래 진도 카드에 있으므로 헤더에서는 생략
     backCatBtn.classList.remove("hidden");
-    const currentGroup = POS_GROUPS.find(g => g.id === state.selectedPosGroup);
-    const posName = currentGroup ? currentGroup.name : "명사";
-    mainTitle.innerHTML = `<span>AIN</span><span class="theme-primary-text">영단어</span><span class="text-xs font-semibold theme-sub-text ml-1">(${state.selectedLevel} ${posName})</span>`;
+    mainTitle.innerHTML = `<span>AIN</span><span class="theme-primary-text">영단어</span>`;
   } else {
     backCatBtn.classList.add("hidden");
   }
+  // Day 목록 화면에서는 [< 카테고리] 버튼 자리를 위해 로고를 숨김
+  document.getElementById("header-logo").classList.toggle("hidden", viewId === "view-home");
   window.scrollTo(0, 0);
 }
 
