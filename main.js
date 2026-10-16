@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderCategoryView();
   renderPosGuideView();
-  switchView("view-categories");
+  openChallenge();   // 앱을 열면 데일리 챌린지가 먼저
 
   // 화면별 버튼 연결
   initCategoryScreen();
@@ -27,4 +27,5 @@ document.addEventListener("DOMContentLoaded", () => {
   initSettingsScreen();
   initQuizScreen();
   initResultScreen();
+  initChallengeScreen();
 });

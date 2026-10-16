@@ -1,8 +1,16 @@
 // ==========================================================
 // days.js : ③ 학습단계 화면 (Day 목록, 진도율, 영한/한영 모드 선택)
+// 챌린지에서 날짜를 골라 들어오면 맨 위에 "○월 ○일 칸을 채우는 중"을 표시합니다.
 // ==========================================================
 
 function renderHome() {
+  const fillingKey = getChallengeFillingKey();
+  document.getElementById("challenge-filling-banner").classList.toggle("hidden", !fillingKey);
+  if (fillingKey) {
+    const f = parseDateKey(fillingKey);
+    document.getElementById("txt-challenge-filling").textContent = `${f.m}월 ${f.d}일 칸을 채우는 중`;
+  }
+
   const words = getWordsForCategory(state.selectedLevel, state.selectedPosGroup);
   const totalWords = words.length;
   const totalDays = Math.ceil(totalWords / state.wordsPerDay);

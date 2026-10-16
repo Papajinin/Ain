@@ -1,6 +1,7 @@
 // ==========================================================
 // result.js : ⑦ 결과 화면 (정답률, 오답 목록, 100% 클리어 기록)
 // 복습 게임 결과도 이 화면을 함께 씁니다 (문구만 다름, 진도 기록 없음).
+// 데일리 챌린지 칸을 채웠으면 "조각 열기!" 카드를 보여 줍니다 (challenge.js).
 // ==========================================================
 
 function finishQuiz() {
@@ -20,6 +21,7 @@ function finishQuiz() {
   const nextBtn = document.getElementById("btn-result-next-day");
 
   const isDayQuiz = quizSource === "day";
+  document.getElementById("result-challenge-card").classList.add("hidden");
 
   // 재도전 버튼 문구 (게임이면 게임으로 다시)
   document.getElementById("txt-result-retry-label").textContent =
@@ -41,8 +43,21 @@ function finishQuiz() {
       subtitle.textContent = "모든 단어를 완벽하게 마스터하셨습니다.";
 
       const clearKey = getClearKey(state.mode, state.selectedLevel, state.selectedPosGroup, currentQuizDayNumber);
+      const wasCleared = !!state.clearedDays[clearKey];
       state.clearedDays[clearKey] = true;
       saveState();
+
+      // 데일리 챌린지: 이 Day의 영→한·한→영이 방금 모두 클리어됐으면 칸 채우기
+      const credit = challengeCreditForDay(state.selectedLevel, state.selectedPosGroup, currentQuizDayNumber, wasCleared);
+      if (credit) {
+        lastCreditMonth = credit.mk;
+        document.getElementById("txt-result-challenge-title").textContent = `${credit.m}월 ${credit.d}일 칸을 채웠어요!`;
+        document.getElementById("txt-result-challenge-sub").innerHTML = credit.count > 0
+          ? `<i class="fa-solid fa-puzzle-piece mr-1"></i>조각 ${credit.count}개 획득${credit.bonus ? " (보너스 날짜)" : ""}`
+          : "이달의 퍼즐 조각이 이미 모두 열려 있어요";
+        document.getElementById("btn-result-open-piece").classList.toggle("hidden", credit.count === 0);
+        document.getElementById("result-challenge-card").classList.remove("hidden");
+      }
 
       const totalDays = Math.ceil(getWordsForCategory(state.selectedLevel, state.selectedPosGroup).length / state.wordsPerDay);
       nextBtn.classList.toggle("hidden", currentQuizDayNumber >= totalDays);
@@ -99,6 +114,9 @@ function initResultScreen() {
   };
   document.getElementById("btn-result-next-day").onclick = () => {
     openStudyView(currentQuizDayNumber + 1);
+  };
+  document.getElementById("btn-result-open-piece").onclick = () => {
+    if (lastCreditMonth) openPuzzle(lastCreditMonth);
   };
   document.getElementById("btn-result-retry-missed").onclick = () => {
     startQuiz(currentQuizDayNumber, quizSource, [...quizMissedWords], quizIsGame);

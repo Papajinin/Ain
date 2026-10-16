@@ -42,3 +42,9 @@ body { background-color: var(--bg-page); color: var(--text-main); transition: ba
 @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 .scale-card { transition: transform 0.15s ease, box-shadow 0.15s ease; }
 .scale-card:active { transform: scale(0.98); }
+
+/* 데일리 챌린지: 밀린 날짜 반짝임, 고를 수 있는 조각 반짝임 (테마 색 사용) */
+.challenge-blink { animation: challengeBlink 0.9s ease-in-out infinite alternate; }
+@keyframes challengeBlink { to { background-color: var(--accent-badge); border-color: var(--primary); } }
+.puzzle-pick { cursor: pointer; animation: puzzlePick 0.8s ease-in-out infinite alternate; }
+@keyframes puzzlePick { to { background-color: var(--accent-badge); color: var(--accent-badge-text); } }
