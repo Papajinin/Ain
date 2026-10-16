@@ -16,7 +16,7 @@ function openStudyView(dayNumber) {
   studyWords = categoryWords.slice(start, end);
 
   currentStudyIndex = 0;
-  document.getElementById("study-header-title").textContent = `Day ${dayNumber} 단어 학습 (${studyWords.length}단어)`;
+  document.getElementById("study-header-title").textContent = `Stage ${dayNumber} 단어 학습 (${studyWords.length}단어)`;
 
   // 현재 모드에서 클리어한 Day면 복습 버튼 2개, 아니면 기존 테스트 버튼 1개
   const isCleared = !!state.clearedDays[getClearKey(state.mode, state.selectedLevel, state.selectedPosGroup, dayNumber)];

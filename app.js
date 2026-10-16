@@ -2,7 +2,7 @@
 // app.js : 여러 화면이 함께 쓰는 공통 기능
 //  - 품사 그룹 정의, 저장소(localStorage) 읽기/쓰기, 백업 검증
 //  - 단어 데이터 읽기, 발음(TTS), 화면 전환, 테마 적용
-//  - 카테고리별 단어 목록과 Day 진도 키 계산
+//  - 카테고리별 단어 목록과 Stage(코드 안에서는 day) 진도 키 계산
 // 저장 키 STORAGE_KEY 와 state 의 항목 이름은 바꾸지 마세요.
 // (바꾸면 기존 진도·오답노트·설정을 읽지 못합니다)
 // ==========================================================
@@ -236,8 +236,6 @@ function switchView(viewId) {
   } else {
     backCatBtn.classList.add("hidden");
   }
-  // Day 목록 화면에서는 [< 카테고리] 버튼 자리를 위해 로고를 숨김
-  document.getElementById("header-logo").classList.toggle("hidden", viewId === "view-home");
   window.scrollTo(0, 0);
 }
 

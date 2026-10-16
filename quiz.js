@@ -1,5 +1,5 @@
 // ==========================================================
-// quiz.js : ⑤ 영한 퀴즈(자가채점) · ⑥ 한영 퀴즈(스펠링 입력) 공용 화면
+// quiz.js : ⑤ 영한 퀴즈(뜻 입력 후 자가채점) · ⑥ 한영 퀴즈(스펠링 입력) 공용 화면
 //           + 복습 게임(4지선다, 클리어한 Day에서 시작)
 // 퀴즈가 끝나면 result.js 의 finishQuiz() 로 넘어갑니다.
 // 게임 보기 규칙은 buildChoices() 에서 고칩니다.
@@ -25,7 +25,20 @@ function waitForNextButton() {
   document.getElementById("btn-quiz-next").classList.remove("hidden");
 }
 
-const TEST_PLACEHOLDER = "아래 '정답 확인하기'를 눌러 뜻을 확인하세요";
+const TEST_PLACEHOLDER = "뜻을 입력하고 '정답 확인하기'를 누르세요";
+const INPUT_BASE = "w-full px-4 py-3 text-center text-lg font-bold rounded-2xl border-2 theme-border bg-black/5 dark:bg-white/5 focus:outline-none focus:border-[color:var(--primary)] transition";
+
+// 입력칸 초기화 (영→한: 뜻, 한→영: 영단어)
+function resetAnswerInput(placeholder) {
+  const input = document.getElementById("quiz-spell-input");
+  input.value = "";
+  input.disabled = false;
+  input.placeholder = placeholder;
+  input.className = INPUT_BASE;
+  const feedback = document.getElementById("quiz-feedback-msg");
+  feedback.className = "text-xs font-bold mt-2 min-h-[18px]";
+  feedback.textContent = "";
+}
 const GAME_PLACEHOLDER = "알맞은 답을 고르세요";
 
 function cancelPendingAnswer() {
@@ -82,6 +95,8 @@ function renderQuizQuestion() {
   document.getElementById("quiz-revealed-meaning").classList.add("hidden");
   document.getElementById("quiz-hidden-placeholder").classList.remove("hidden");
   document.getElementById("quiz-ipa-container").classList.remove("hidden");
+  document.getElementById("quiz-correct-label").classList.add("hidden");
+  document.getElementById("quiz-my-answer-label").classList.add("hidden");
 
   // 게임 영역 초기화 (일반 테스트에서는 계속 숨김)
   const choiceBox = document.getElementById("quiz-choice-container");
@@ -96,7 +111,10 @@ function renderQuizQuestion() {
     document.getElementById("quiz-question-primary").textContent = current.word;
     document.getElementById("quiz-ipa").textContent = current.ipa || "";
     document.getElementById("quiz-revealed-meaning").textContent = current.meaning;
+    // 뜻을 직접 입력 (새 문제는 키보드가 내려간 상태로 시작)
+    document.getElementById("quiz-typing-container").classList.remove("hidden");
     document.getElementById("btn-show-answer").classList.remove("hidden");
+    resetAnswerInput("뜻을 입력하세요");
     playTTS(current.word);
   } else {
     document.getElementById("quiz-question-primary").textContent = current.meaning;
@@ -105,11 +123,7 @@ function renderQuizQuestion() {
     document.getElementById("quiz-typing-container").classList.remove("hidden");
     document.getElementById("btn-submit-typing").classList.remove("hidden");
 
-    const input = document.getElementById("quiz-spell-input");
-    input.value = "";
-    input.disabled = false;
-    input.className = "w-full px-4 py-3 text-center text-lg font-bold rounded-2xl border-2 theme-border bg-black/5 dark:bg-white/5 focus:outline-none focus:border-blue-500 transition";
-    document.getElementById("quiz-feedback-msg").textContent = "";
+    resetAnswerInput("영단어를 입력하세요...");
     // 새 문제는 키보드가 내려간 상태로 시작 (입력칸을 눌러 입력)
   }
 
@@ -252,12 +266,29 @@ function initQuizScreen() {
     }
   };
 
-  document.getElementById("btn-show-answer").onclick = () => {
+  // 영→한: 뜻을 입력해야 정답을 볼 수 있음 → 내가 쓴 답과 정답을 나란히 → 틀렸음/맞았음
+  function revealEnKoAnswer() {
+    const btn = document.getElementById("btn-show-answer");
+    if (btn.classList.contains("hidden")) return;
+    const myInput = document.getElementById("quiz-spell-input");
+    const msg = document.getElementById("quiz-feedback-msg");
+    if (!myInput.value.trim()) {
+      msg.className = "text-xs font-bold mt-2 min-h-[18px] theme-sub-text";
+      msg.textContent = "뜻을 먼저 입력해 주세요";
+      myInput.focus();
+      return;
+    }
+    myInput.blur();   // 키보드를 내려 정답과 채점 버튼이 보이게 (잠그기 전에)
+    myInput.disabled = true;
+    msg.textContent = "";
+    document.getElementById("quiz-my-answer-label").classList.remove("hidden");
+    document.getElementById("quiz-correct-label").classList.remove("hidden");
     document.getElementById("quiz-hidden-placeholder").classList.add("hidden");
     document.getElementById("quiz-revealed-meaning").classList.remove("hidden");
-    document.getElementById("btn-show-answer").classList.add("hidden");
+    btn.classList.add("hidden");
     document.getElementById("quiz-self-eval-buttons").classList.remove("hidden");
-  };
+  }
+  document.getElementById("btn-show-answer").onclick = revealEnKoAnswer;
 
   document.getElementById("btn-eval-correct").onclick = () => handleQuizAnswer(true);
   document.getElementById("btn-eval-wrong").onclick = () => handleQuizAnswer(false);
@@ -300,6 +331,8 @@ function initQuizScreen() {
     handleQuizAnswer(false);
   };
   input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") processSpellingCheck();
+    if (e.key !== "Enter" || quizIsGame) return;
+    if (state.mode === "en-ko") revealEnKoAnswer();
+    else processSpellingCheck();
   });
 }

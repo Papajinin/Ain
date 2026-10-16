@@ -1,39 +1,56 @@
 /* ==========================================================
    style.css : 테마 색상, 글꼴, 애니메이션
    - 대부분의 모양(여백, 크기, 배치)은 index.html의 class(Tailwind)로 정해집니다.
-   - 여기서는 4가지 테마의 색상 변수와 공통 효과만 관리합니다.
+   - 여기서는 4가지 학교 테마의 색상 변수, 시작 화면(스플래시), 공통 효과를 관리합니다.
    ========================================================== */
 @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&display=swap');
 * { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
 input { user-select: text; }
 
-body.theme-ios {
-  --bg-page: #f2f2f7; --bg-card: #ffffff; --text-main: #1c1c1e; --text-sub: #8e8e93;
-  --primary: #007aff; --primary-hover: #0062cc; --border: #e5e5ea;
-  --accent-badge: #e3f2fd; --accent-badge-text: #007aff; --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-}
-/* 1. Pure Sky 테마 */
-body.theme-playful {
-  --bg-page: #f0f9ff; --bg-card: #ffffff; --text-main: #0c4a6e; --text-sub: #0284c7;
-  --primary: #38bdf8; --primary-hover: #0284c7; --border: #e0f2fe;
-  --accent-badge: #e0f2fe; --accent-badge-text: #0284c7; --card-shadow: 0 8px 24px rgba(56, 189, 248, 0.12);
-}
-body.theme-paper {
-  --bg-page: #f5f0e6; --bg-card: #fdfbf7; --text-main: #3d3228; --text-sub: #8c7a6b;
-  --primary: #8b5a2b; --primary-hover: #6f441e; --border: #e6dcce;
-  --accent-badge: #ebdcc9; --accent-badge-text: #5c3a1e; --card-shadow: 0 4px 14px rgba(110, 80, 50, 0.08);
-}
-/* 2. Neon Sky 다크 테마 */
+/* 학교 테마 4종 (내부 이름은 예전 그대로라 저장된 설정이 그대로 이어짐)
+   --on-primary  : 강조색 버튼 위 글씨색
+   --accent-text : 강조 글씨색 (글씨로 읽기 쉽게 버튼색보다 한 단계 조정)
+   --logo-*      : 헤더 책 로고 색,  --sp-* : 시작 화면(스플래시) 색 */
+
+/* 1. 카라스노 (다크 · 네이비 + 오렌지) — 기기 다크모드 자동 연동 시 이 테마 */
 body.theme-dark {
-  --bg-page: #0b0f17; --bg-card: #161e2e; --text-main: #f1f5f9; --text-sub: #94a3b8;
-  --primary: #38bdf8; --primary-hover: #0ea5e9; --border: #222f46;
-  --accent-badge: #172b4d; --accent-badge-text: #7dd3fc; --card-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+  --bg-page: #0f172a; --bg-card: #1e293b; --text-main: #f8fafc; --text-sub: #94a3b8;
+  --primary: #f97316; --primary-hover: #ea580c; --on-primary: #0f172a; --accent-text: #fb923c; --border: #334155;
+  --accent-badge: #3b2412; --accent-badge-text: #fdba74; --card-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+  --logo-cover: #f97316; --logo-letter: #0f172a; --logo-ribbon: #ffffff;
+  --sp-bg:#0f172a; --sp-ain:#ffffff; --sp-accent:#f97316; --sp-glow:rgba(249,115,22,.5); --sp-badge-bg:#f97316; --sp-badge-text:#0b0b0b; --sp-badge-border:transparent; --sp-bar-from:#c2410c; --sp-bar-to:#fb923c; --sp-track:rgba(0,0,0,.5); --sp-track-border:rgba(255,255,255,.1); --sp-sub:rgba(253,186,116,.75);
+}
+/* 2. 네코마 (웜 화이트 + 레드) */
+body.theme-ios {
+  --bg-page: #fff5f5; --bg-card: #ffffff; --text-main: #1f1315; --text-sub: #8a5a5e;
+  --primary: #dc2626; --primary-hover: #b91c1c; --on-primary: #ffffff; --accent-text: #b91c1c; --border: #f5d5d5;
+  --accent-badge: #fee2e2; --accent-badge-text: #b91c1c; --card-shadow: 0 4px 16px rgba(127, 29, 29, 0.06);
+  --logo-cover: #dc2626; --logo-letter: #ffffff; --logo-ribbon: #1f1315;
+  --sp-bg:#0b0d13; --sp-ain:#ffffff; --sp-accent:#ef4444; --sp-glow:rgba(239,68,68,.5); --sp-badge-bg:#ef4444; --sp-badge-text:#ffffff; --sp-badge-border:transparent; --sp-bar-from:#991b1b; --sp-bar-to:#f87171; --sp-track:rgba(0,0,0,.5); --sp-track-border:rgba(255,255,255,.1); --sp-sub:rgba(252,165,165,.75);
+}
+/* 3. 아오바조사이 (민트 화이트 + 청록) */
+body.theme-playful {
+  --bg-page: #effcf9; --bg-card: #ffffff; --text-main: #083c38; --text-sub: #3f7670;
+  --primary: #0f766e; --primary-hover: #115e59; --on-primary: #ffffff; --accent-text: #0f766e; --border: #ccf2ec;
+  --accent-badge: #ccfbf1; --accent-badge-text: #0f766e; --card-shadow: 0 8px 24px rgba(13, 148, 136, 0.10);
+  --logo-cover: #0f766e; --logo-letter: #ffffff; --logo-ribbon: #5eead4;
+  --sp-bg:#f8fafc; --sp-ain:#0f172a; --sp-accent:#0d9488; --sp-glow:rgba(13,148,136,.25); --sp-badge-bg:#0d9488; --sp-badge-text:#ffffff; --sp-badge-border:transparent; --sp-bar-from:#0f766e; --sp-bar-to:#2dd4bf; --sp-track:rgba(15,23,42,.08); --sp-track-border:rgba(15,23,42,.12); --sp-sub:rgba(15,118,110,.8);
+}
+/* 4. 후쿠로다니 (샌드 + 차콜 + 옐로) */
+body.theme-paper {
+  --bg-page: #f4efe6; --bg-card: #fcfaf6; --text-main: #18181b; --text-sub: #71665c;
+  --primary: #27272a; --primary-hover: #18181b; --on-primary: #eab308; --accent-text: #a16207; --border: #e3dace;
+  --accent-badge: #fef3c7; --accent-badge-text: #854d0e; --card-shadow: 0 4px 14px rgba(60, 50, 30, 0.08);
+  --logo-cover: #27272a; --logo-letter: #eab308; --logo-ribbon: #eab308;
+  --sp-bg:#050505; --sp-ain:#ffffff; --sp-accent:#eab308; --sp-glow:rgba(234,179,8,.45); --sp-badge-bg:#050505; --sp-badge-text:#eab308; --sp-badge-border:#eab308; --sp-bar-from:#a16207; --sp-bar-to:#facc15; --sp-track:rgba(255,255,255,.08); --sp-track-border:rgba(255,255,255,.12); --sp-sub:rgba(253,224,71,.7);
 }
 
 body { background-color: var(--bg-page); color: var(--text-main); transition: background-color 0.25s ease, color 0.25s ease; }
 .theme-card { background-color: var(--bg-card); border-color: var(--border); box-shadow: var(--card-shadow); color: var(--text-main); }
 .theme-primary-bg { background-color: var(--primary); }
-.theme-primary-text { color: var(--primary); }
+/* 강조색 버튼 위 글씨: 'text-white'보다 우선 (테마마다 흰색/남색/옐로) */
+.theme-primary-bg.text-white { color: var(--on-primary); }
+.theme-primary-text { color: var(--accent-text); }
 .theme-sub-text { color: var(--text-sub); }
 .theme-border { border-color: var(--border); }
 .theme-badge { background-color: var(--accent-badge); color: var(--accent-badge-text); }
@@ -48,3 +65,21 @@ body { background-color: var(--bg-page); color: var(--text-main); transition: ba
 @keyframes challengeBlink { to { background-color: var(--accent-badge); border-color: var(--primary); } }
 .puzzle-pick { cursor: pointer; animation: puzzlePick 0.8s ease-in-out infinite alternate; }
 @keyframes puzzlePick { to { background-color: var(--accent-badge); color: var(--accent-badge-text); } }
+
+/* 시작 화면(스플래시): 앱을 새로 열 때만 2초간 표시 (main.js) */
+#app-splash { background: var(--sp-bg); transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+#app-splash.splash-fadeout { opacity: 0; transform: scale(1.04); pointer-events: none; }
+@keyframes splashCharge { from { width: 0%; } to { width: 100%; } }
+@keyframes splashMoveX { from { left: 0%; } to { left: 100%; } }
+@keyframes splashBounce {
+  0%, 25%, 50%, 75%, 100% { transform: translateY(-100%); }
+  12.5%, 37.5%, 62.5%, 87.5% { transform: translateY(-165%); }
+}
+@keyframes splashRoll { from { transform: rotate(0deg); } to { transform: rotate(720deg); } }
+.splash-charge { animation: splashCharge 2.0s linear forwards; }
+.splash-move-x { animation: splashMoveX 2.0s linear forwards; }
+.splash-bounce { animation: splashBounce 2.0s ease-in-out forwards; }
+.splash-roll { animation: splashRoll 2.0s linear forwards; }
+
+/* 답을 낸 뒤 잠긴 입력칸도 글씨가 흐려지지 않게 (아이폰 기본 동작 보정) */
+#quiz-spell-input:disabled { opacity: 1; -webkit-text-fill-color: currentColor; }

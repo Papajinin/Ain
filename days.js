@@ -1,5 +1,6 @@
 // ==========================================================
-// days.js : ③ 학습단계 화면 (Day 목록, 진도율, 영한/한영 모드 선택)
+// days.js : ③ 학습단계 화면 (Stage 목록, 진도율, 영한/한영 모드 선택)
+// 화면에는 "Stage"로 보이지만 코드와 저장 데이터 안에서는 예전 이름 "day"를 그대로 씁니다.
 // 챌린지에서 날짜를 골라 들어오면 맨 위에 "○월 ○일 칸을 채우는 중"을 표시합니다.
 // ==========================================================
 
@@ -27,7 +28,7 @@ function renderHome() {
   const pct = totalDays > 0 ? Math.round((clearedCount / totalDays) * 100) : 0;
 
   document.getElementById("txt-progress-label").textContent = `${state.selectedLevel} ${groupName} 완주 진도율`;
-  document.getElementById("txt-progress-summary").textContent = `${clearedCount} / ${totalDays} Day 완료`;
+  document.getElementById("txt-progress-summary").textContent = `${clearedCount} / ${totalDays} Stage 완료`;
   document.getElementById("txt-progress-pct").textContent = `${pct}%`;
   document.getElementById("txt-total-words-count").textContent = `총 ${totalWords}개 단어`;
   document.getElementById("txt-words-per-day-badge").textContent = `세트당 ${state.wordsPerDay}개씩 (랜덤 배정)`;
@@ -63,7 +64,7 @@ function renderHome() {
         </div>
         <div>
           <div class="font-bold text-sm flex items-center space-x-2">
-            <span>Day ${day}</span>
+            <span>Stage ${day}</span>
             ${isCleared ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 font-bold">클리어</span>' : ''}
           </div>
           <div class="text-[11px] theme-sub-text mt-0.5">${startWord}번 ~ ${endWord}번 단어</div>

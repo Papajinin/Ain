@@ -4,6 +4,13 @@
 // 새 화면 파일을 추가하면 아래에 init 함수 호출을 한 줄 추가합니다.
 // ==========================================================
 document.addEventListener("DOMContentLoaded", () => {
+  // 시작 화면(스플래시): 2.3초 뒤 서서히 사라지고 없어짐. 앱을 새로 열 때만 보임
+  const splash = document.getElementById("app-splash");
+  if (splash) {
+    setTimeout(() => splash.classList.add("splash-fadeout"), 2300);
+    setTimeout(() => splash.remove(), 2900);
+  }
+
   loadState();
   parseEmbeddedDatabase();
   initTTS();

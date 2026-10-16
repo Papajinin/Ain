@@ -35,11 +35,11 @@ function finishQuiz() {
     if (quizIsGame) {
       // 복습 게임: 이미 클리어한 Day라 진도는 기록하지 않음
       title.textContent = "복습 게임 100%!";
-      subtitle.textContent = `Day ${currentQuizDayNumber} 단어를 게임으로 모두 맞혔습니다.`;
+      subtitle.textContent = `Stage ${currentQuizDayNumber} 단어를 게임으로 모두 맞혔습니다.`;
       const totalDays = Math.ceil(getWordsForCategory(state.selectedLevel, state.selectedPosGroup).length / state.wordsPerDay);
       nextBtn.classList.toggle("hidden", currentQuizDayNumber >= totalDays);
     } else if (isDayQuiz) {
-      title.textContent = `Day ${currentQuizDayNumber} 100% 클리어!`;
+      title.textContent = `Stage ${currentQuizDayNumber} 100% 클리어!`;
       subtitle.textContent = "모든 단어를 완벽하게 마스터하셨습니다.";
 
       const clearKey = getClearKey(state.mode, state.selectedLevel, state.selectedPosGroup, currentQuizDayNumber);
