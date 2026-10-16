@@ -3,6 +3,8 @@
 //           + 복습 게임(4지선다, 클리어한 Day에서 시작)
 // 퀴즈가 끝나면 result.js 의 finishQuiz() 로 넘어갑니다.
 // 게임 보기 규칙은 buildChoices() 에서 고칩니다.
+// 넘어가는 방식(한영 테스트·복습 게임 공통): 정답은 CORRECT_NEXT_DELAY 뒤 자동,
+// 오답은 "다음 문제" 버튼을 눌러야 넘어감. 새 문제는 언제나 키보드가 내려간 상태로 시작.
 // ==========================================================
 
 let currentQuizSet = [];
@@ -13,6 +15,15 @@ let quizSource = "day";
 let answerTimer = null;
 let quizIsGame = false;      // true = 복습 게임(4지선다)
 let choiceLocked = false;    // 게임에서 보기를 한 번 누르면 잠금 (연타 방지)
+let awaitingNext = false;    // 오답 후 "다음 문제" 버튼을 기다리는 중
+
+const CORRECT_NEXT_DELAY = 3000;   // 정답 후 다음 문제까지 (ms)
+
+// 오답: "다음 문제" 버튼을 보여 주고 누를 때까지 기다림
+function waitForNextButton() {
+  awaitingNext = true;
+  document.getElementById("btn-quiz-next").classList.remove("hidden");
+}
 
 const TEST_PLACEHOLDER = "아래 '정답 확인하기'를 눌러 뜻을 확인하세요";
 const GAME_PLACEHOLDER = "알맞은 답을 고르세요";
@@ -64,6 +75,8 @@ function renderQuizQuestion() {
   document.getElementById("btn-show-answer").classList.add("hidden");
   document.getElementById("quiz-self-eval-buttons").classList.add("hidden");
   document.getElementById("btn-submit-typing").classList.add("hidden");
+  document.getElementById("btn-quiz-next").classList.add("hidden");
+  awaitingNext = false;
   document.getElementById("quiz-typing-container").classList.add("hidden");
   document.getElementById("quiz-answer-container").classList.remove("hidden");
   document.getElementById("quiz-revealed-meaning").classList.add("hidden");
@@ -97,7 +110,7 @@ function renderQuizQuestion() {
     input.disabled = false;
     input.className = "w-full px-4 py-3 text-center text-lg font-bold rounded-2xl border-2 theme-border bg-black/5 dark:bg-white/5 focus:outline-none focus:border-blue-500 transition";
     document.getElementById("quiz-feedback-msg").textContent = "";
-    setTimeout(() => input.focus(), 150);
+    // 새 문제는 키보드가 내려간 상태로 시작 (입력칸을 눌러 입력)
   }
 
   document.getElementById("btn-play-voice").onclick = () => playTTS(current.word);
@@ -195,7 +208,11 @@ function pickChoice(pickedBtn, isCorrect) {
 
   if (state.mode !== "en-ko") playTTS(current.word);
 
-  answerTimer = setTimeout(() => { answerTimer = null; handleQuizAnswer(isCorrect); }, isCorrect ? 1200 : 2000);
+  if (isCorrect) {
+    answerTimer = setTimeout(() => { answerTimer = null; handleQuizAnswer(true); }, CORRECT_NEXT_DELAY);
+  } else {
+    waitForNextButton();
+  }
 }
 
 function validateSpelling(userInput, targetWord) {
@@ -255,6 +272,7 @@ function initQuizScreen() {
     if (!val.trim()) return;
 
     const isCorrect = validateSpelling(val, current.word);
+    input.blur();   // 키보드를 내려 정답 철자와 버튼이 가려지지 않게 (잠그기 전에)
     input.disabled = true;
     submitBtn.classList.add("hidden");
     playTTS(current.word);
@@ -263,16 +281,24 @@ function initQuizScreen() {
       input.className = "w-full px-4 py-3 text-center text-lg font-bold rounded-2xl border-2 border-emerald-500 bg-emerald-50 text-emerald-800 transition";
       feedback.className = "text-xs font-bold mt-2 text-emerald-600";
       feedback.textContent = `정답입니다! [${current.word}]`;
-      answerTimer = setTimeout(() => { answerTimer = null; handleQuizAnswer(true); }, 1200);
+      answerTimer = setTimeout(() => { answerTimer = null; handleQuizAnswer(true); }, CORRECT_NEXT_DELAY);
     } else {
       input.className = "w-full px-4 py-3 text-center text-lg font-bold rounded-2xl border-2 border-rose-500 bg-rose-50 text-rose-800 transition";
       feedback.className = "text-xs font-bold mt-2 text-rose-600";
       feedback.textContent = `오답! 정답: ${current.word}`;
-      answerTimer = setTimeout(() => { answerTimer = null; handleQuizAnswer(false); }, 2000);
+      waitForNextButton();
     }
   }
 
   submitBtn.onclick = processSpellingCheck;
+
+  // 오답 후 "다음 문제" (연타해도 한 번만)
+  document.getElementById("btn-quiz-next").onclick = () => {
+    if (!awaitingNext) return;
+    awaitingNext = false;
+    document.getElementById("btn-quiz-next").classList.add("hidden");
+    handleQuizAnswer(false);
+  };
   input.addEventListener("keydown", (e) => {
     if (e.key === "Enter") processSpellingCheck();
   });

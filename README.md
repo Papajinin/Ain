@@ -47,7 +47,7 @@ Oxford 5000 기반 영어 단어 학습 웹앱입니다. GitHub Pages로 배포�
 | 단어 학습 카드/목록 동작 | `study.js` |
 | 퀴즈 진행, 스펠링 채점 규칙 | `quiz.js` |
 | 복습 게임의 보기 고르는 규칙 (오답 후보, 개수) | `quiz.js` (`buildChoices`) |
-| 복습 게임 넘어가는 시간 (정답 1.2초 / 오답 2초) | `quiz.js` (`pickChoice`) |
+| 정답 후 넘어가는 시간 (지금 3초, 한영 테스트·복습 게임 공통) | `quiz.js` (`CORRECT_NEXT_DELAY`) |
 | 클리어한 Day의 복습 버튼 2개 표시 조건 | `study.js` (`openStudyView`) |
 | 결과 화면 문구, 클리어 기록 방식 | `result.js` |
 | 오답노트 동작 | `notebook.js` |

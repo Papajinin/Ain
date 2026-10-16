@@ -202,7 +202,7 @@ function renderPuzzleBoard(container, mk, { maxHeight, picking = false, highligh
     for (let i = 0; i < PUZZLE_TILES; i++) {
       const tile = document.createElement("div");
       if (opened.has(i)) {
-        tile.className = "border border-white/40";
+        // 열린 조각에는 선을 그리지 않음 → 붙은 조각끼리는 한 장의 그림처럼 이어짐
         if (highlight && i === puzzleJustOpened) tile.style.boxShadow = "inset 0 0 0 3px var(--primary)";
       } else {
         tile.className = `bg-gray-200 dark:bg-gray-800 border theme-border flex items-center justify-center theme-sub-text${picking ? " puzzle-pick" : ""}`;
